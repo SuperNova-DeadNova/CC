@@ -39,7 +39,7 @@ const cc_result ReturnCode_SocketDropped    = EPIPE;
 #define SUPPORTS_GETADDRINFO 1
 
 #if defined CC_BUILD_ANDROID
-const char* Platform_AppNameSuffix = " android";
+const char* Platform_AppNameSuffix = " Android";
 #elif defined CC_BUILD_IOS
 const char* Platform_AppNameSuffix = " iOS";
 #else
