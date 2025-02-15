@@ -2565,7 +2565,7 @@ static int TexIdsOverlay_RenderTerrain(struct TexIdsOverlay* s, int offset) {
 	{
 		Atlas1D_Bind(i);
 
-		Gfx_DrawVb_IndexedTris_Range(count, offset);
+		Gfx_DrawVb_IndexedTris_Range(count, offset, DRAW_HINT_SPRITE);
 		offset += count;
 	}
 	return offset;
@@ -2607,7 +2607,7 @@ static void TexIdsOverlay_Render(void* screen, float delta) {
 	offset = TexIdsOverlay_RenderTerrain(s, offset);
 
 	Gfx_BindTexture(s->idAtlas.tex.ID);
-	Gfx_DrawVb_IndexedTris_Range(s->textVertices, offset);
+	Gfx_DrawVb_IndexedTris_Range(s->textVertices, offset, DRAW_HINT_SPRITE);
 }
 
 static int TexIdsOverlay_KeyDown(void* screen, int key, struct InputDevice* device) {
@@ -2738,7 +2738,7 @@ static cc_bool TexPackOverlay_IsAlways(void* screen, void* w) {
 static void TexPackOverlay_YesClick(void* screen, void* widget) {
 	struct TexPackOverlay* s = (struct TexPackOverlay*)screen;
 	TexturePack_Extract(&s->url);
-	if (TexPackOverlay_IsAlways(s, widget)) TextureCache_Accept(&s->url);
+	if (TexPackOverlay_IsAlways(s, widget)) TextureUrls_Accept(&s->url);
 	Gui_Remove((struct Screen*)s);
 
 	if (TexPackOverlay_IsAlways(s, widget)) CPE_SendNotifyAction(NOTIFY_ACTION_TEXTURE_PROMPT_RESPONDED, 3);
@@ -2754,7 +2754,7 @@ static void TexPackOverlay_NoClick(void* screen, void* widget) {
 
 static void TexPackOverlay_ConfirmNoClick(void* screen, void* b) {
 	struct TexPackOverlay* s = (struct TexPackOverlay*)screen;
-	if (s->alwaysDeny) TextureCache_Deny(&s->url);
+	if (s->alwaysDeny) TextureUrls_Deny(&s->url);
 	Gui_Remove((struct Screen*)s);
 
 	if (s->alwaysDeny) CPE_SendNotifyAction(NOTIFY_ACTION_TEXTURE_PROMPT_RESPONDED, 0);

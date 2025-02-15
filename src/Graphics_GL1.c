@@ -72,7 +72,9 @@ typedef void (*GL_SetupVBFunc)(void);
 typedef void (*GL_SetupVBRangeFunc)(int startVertex);
 static GL_SetupVBFunc gfx_setupVBFunc;
 static GL_SetupVBRangeFunc gfx_setupVBRangeFunc;
+
 #include "_GLShared.h"
+static void GLBackend_Init(void);
 
 void Gfx_Create(void) {
 	GLContext_Create();
@@ -325,7 +327,7 @@ void Gfx_DrawVb_Lines(int verticesCount) {
 	_glDrawArrays(GL_LINES, 0, verticesCount);
 }
 
-void Gfx_DrawVb_IndexedTris_Range(int verticesCount, int startVertex) {
+void Gfx_DrawVb_IndexedTris_Range(int verticesCount, int startVertex, DrawHints hints) {
 #ifdef CC_BUILD_GL11
 	if (activeList != gl_DYNAMICLISTID) { glCallList(activeList); return; }
 #endif
