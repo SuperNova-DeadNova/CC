@@ -1,4 +1,4 @@
-package com.classicube;
+package com.deleter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -15,7 +15,7 @@ import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
 import android.provider.OpenableColumns;
 
-public class CCFileProvider extends ContentProvider
+public class DFileProvider extends ContentProvider
 {
     final static String[] DEFAULT_COLUMNS = { OpenableColumns.DISPLAY_NAME, OpenableColumns.SIZE, MediaStore.MediaColumns.DATA };
     File root;
@@ -96,7 +96,7 @@ public class CCFileProvider extends ContentProvider
         // See AndroidManifest.xml for authority
         return new Uri.Builder()
                 .scheme("content")
-                .authority("com.classicube.android.client.provider")
+                .authority("com.deleter.android.client.provider")
                 .encodedPath(Uri.encode(path, "/"))
                 .build();
     }
