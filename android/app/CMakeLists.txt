@@ -21,7 +21,7 @@ set(${CMAKE_C_FLAGS}, "${CMAKE_C_FLAGS}")
 # now build app's shared lib
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++11 -Wall -Werror")
 
-add_library(classicube SHARED
+add_library(deleter SHARED
         ../../src/main.c
         ../../src/IsometricDrawer.c
         ../../src/Builder.c
@@ -110,7 +110,7 @@ add_library(classicube SHARED
         )
 
 # add lib dependencies
-target_link_libraries(classicube
+target_link_libraries(deleter
     android
     EGL
     GLESv2
