@@ -12,7 +12,7 @@ concurrency:
 jobs:
   build:
     if: github.ref_name == github.event.repository.default_branch
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     container:
       image: ghcr.io/saschpe/android-ndk:34-jdk17.0.8_7-ndk25.2.9519653-cmake3.22.1
     steps:
@@ -44,20 +44,20 @@ jobs:
           chmod +x build-tools/zipalign
 
           cd $ROOT_DIR/src
-          $NDK_ROOT/armv7a-linux-androideabi19-clang *.c $DROID_FLAGS -march=armv5 $DROID_LIBS $LATEST_FLAG -o cc-droid-arm_16
-          $NDK_ROOT/armv7a-linux-androideabi19-clang *.c $DROID_FLAGS $DROID_LIBS $LATEST_FLAG -o cc-droid-arm_32
-          $NDK_ROOT/aarch64-linux-android21-clang *.c $DROID_FLAGS $DROID_LIBS $LATEST_FLAG -o cc-droid-arm_64
-          $NDK_ROOT/i686-linux-android21-clang *.c $DROID_FLAGS $DROID_LIBS $LATEST_FLAG -o cc-droid-x86_32
-          $NDK_ROOT/x86_64-linux-android21-clang *.c $DROID_FLAGS $DROID_LIBS $LATEST_FLAG -o cc-droid-x86_64
+          $NDK_ROOT/armv7a-linux-androideabi19-clang *.c $DROID_FLAGS -march=armv5 $DROID_LIBS $LATEST_FLAG -o d-droid-arm_16
+          $NDK_ROOT/armv7a-linux-androideabi19-clang *.c $DROID_FLAGS $DROID_LIBS $LATEST_FLAG -o d-droid-arm_32
+          $NDK_ROOT/aarch64-linux-android21-clang *.c $DROID_FLAGS $DROID_LIBS $LATEST_FLAG -o d-droid-arm_64
+          $NDK_ROOT/i686-linux-android21-clang *.c $DROID_FLAGS $DROID_LIBS $LATEST_FLAG -o d-droid-x86_32
+          $NDK_ROOT/x86_64-linux-android21-clang *.c $DROID_FLAGS $DROID_LIBS $LATEST_FLAG -o d-droid-x86_64
           
           cd $ROOT_DIR/android/app/src/main
           # copy required native libraries
           mkdir lib lib/armeabi lib/armeabi-v7a lib/arm64-v8a lib/x86 lib/x86_64
-          cp $ROOT_DIR/src/cc-droid-arm_16 lib/armeabi/libclassicube.so
-          cp $ROOT_DIR/src/cc-droid-arm_32 lib/armeabi-v7a/libclassicube.so
-          cp $ROOT_DIR/src/cc-droid-arm_64 lib/arm64-v8a/libclassicube.so
-          cp $ROOT_DIR/src/cc-droid-x86_32 lib/x86/libclassicube.so
-          cp $ROOT_DIR/src/cc-droid-x86_64 lib/x86_64/libclassicube.so
+          cp $ROOT_DIR/src/d-droid-arm_16 lib/armeabi/libdeleter.so
+          cp $ROOT_DIR/src/d-droid-arm_32 lib/armeabi-v7a/libdeleter.so
+          cp $ROOT_DIR/src/d-droid-arm_64 lib/arm64-v8a/libdeleter.so
+          cp $ROOT_DIR/src/d-droid-x86_32 lib/x86/libdeleter.so
+          cp $ROOT_DIR/src/d-droid-x86_64 lib/x86_64/libdeleter.so
           
           # The following commands are for manually building an .apk, see
           #  https://spin.atomicobject.com/2011/08/22/building-android-application-bundles-apks-by-hand/
@@ -77,24 +77,24 @@ jobs:
           # compile the multiple .class files into one .dex file
           $TOOLS_ROOT/dx --dex --output=classes.dex ./obj
           # create initial .apk with packaged version of resources
-          $TOOLS_ROOT/aapt package -f -M AndroidManifest.xml -S res -F cc-unsigned.apk -I $SDK_ROOT/android.jar
+          $TOOLS_ROOT/aapt package -f -M AndroidManifest.xml -S res -F d-unsigned.apk -I $SDK_ROOT/android.jar
           # and add all the required files
-          $TOOLS_ROOT/aapt add -f cc-unsigned.apk classes.dex lib/armeabi/libclassicube.so lib/armeabi-v7a/libclassicube.so lib/arm64-v8a/libclassicube.so lib/x86/libclassicube.so lib/x86_64/libclassicube.so
+          $TOOLS_ROOT/aapt add -f d-unsigned.apk classes.dex lib/armeabi/libdeleter.so lib/armeabi-v7a/libdeleter.so lib/arm64-v8a/libdeleter.so lib/x86/libdeleter.so lib/x86_64/libdeleter.so
           
           # sign the apk with debug key (https://stackoverflow.com/questions/16711233/)
           # Note per https://developer.android.com/tools/zipalign
           # - if using apksigner, zipalign must be called before apksigner
           # - if using jarsigner, zipalign must be called after jarsigner
-          $TOOLS_ROOT/zipalign -f 4 cc-unsigned.apk cc-signed.apk
-          $TOOLS_ROOT/apksigner sign --ks debug.keystore --ks-pass pass:android cc-signed.apk
-          cp cc-signed.apk $ROOT_DIR/src/cc.apk
+          $TOOLS_ROOT/zipalign -f 4 d-unsigned.apk d-signed.apk
+          $TOOLS_ROOT/apksigner sign --ks debug.keystore --ks-pass pass:android d-signed.apk
+          cp d-signed.apk $ROOT_DIR/src/deleter.apk
 
           # old v1 only version (doesn't work properly now)
-          #cp cc-unsigned.apk cc-signed.apk
-          #jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore debug.keystore -storepass android -keypass android cc-signed.apk androiddebugkey
+          #cp d-unsigned.apk d-signed.apk
+          #jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore debug.keystore -storepass android -keypass android d-signed.apk androiddebugkey
           # jarsigner -verbose
           # create aligned .apk file
-          #$TOOLS_ROOT/zipalign -f 4 cc-signed.apk $ROOT_DIR/src/cc.apk
+          #$TOOLS_ROOT/zipalign -f 4 d-signed.apk $ROOT_DIR/src/deleter.apk
 
 
       - uses: ./.github/actions/notify_failure
@@ -107,8 +107,8 @@ jobs:
       - uses: ./.github/actions/upload_build
         if: ${{ always() && steps.compile.outcome == 'success' }}
         with:
-          SOURCE_FILE: 'src/cc.apk'
-          DEST_NAME: 'cc.apk'
+          SOURCE_FILE: 'src/deleter.apk'
+          DEST_NAME: 'deleter.apk'
           
           
       - uses: ./.github/actions/notify_success
