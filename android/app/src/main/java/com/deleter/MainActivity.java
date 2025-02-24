@@ -1,4 +1,4 @@
-package com.classicube;
+package com.deleter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -47,7 +47,7 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
 import android.view.inputmethod.InputMethodManager;
 
-// This class contains all the glue/interop code for bridging ClassiCube to the java Android world.
+// This class contains all the glue/interop code for bridging Deleter to the java Android world.
 // Some functionality is only available on later Android versions - try {} catch {} is used in such places 
 //   to ensure that the game can still run on earlier Android versions (albeit with reduced functionality)
 // Currently the minimum required API level to run the game is level 9 (Android 2.3). 
@@ -170,9 +170,9 @@ public class MainActivity extends Activity
 	static boolean gameRunning;
 
 	void startGameAsync() {
-		Log.i("CC_WIN", "handing off to native..");
+		Log.i("D_WIN", "handing off to native..");
 		try {
-			System.loadLibrary("classicube");
+			System.loadLibrary("deleter");
 		} catch (UnsatisfiedLinkError ex) {
 			ex.printStackTrace();
 			showAlertAsync("Failed to start", ex.getMessage());
@@ -188,9 +188,9 @@ public class MainActivity extends Activity
 		// requestWindowFeature - API level 1
 		// setSoftInputMode, SOFT_INPUT_STATE_UNSPECIFIED, SOFT_INPUT_ADJUST_RESIZE - API level 3
 		input = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-		Log.i("CC_WIN", "CREATE EVENT");
+		Log.i("D_WIN", "CREATE EVENT");
 		Window window = getWindow();
-		Log.i("CC_WIN", "GAME RUNNING?" + gameRunning);
+		Log.i("D_WIN", "GAME RUNNING?" + gameRunning);
 		//window.takeSurface(this);
 		//window.takeInputQueue(this);
 		// TODO: Should this be RGBA_8888??
@@ -326,7 +326,7 @@ public class MainActivity extends Activity
 	
 	@Override
 	public void onDestroy() {
-		Log.i("CC_WIN", "APP DESTROYED");
+		Log.i("D_WIN", "APP DESTROYED");
 		super.onDestroy();
 		pushCmd(CMD_APP_DESTROY);
 	}
@@ -430,7 +430,7 @@ public class MainActivity extends Activity
 	
 	void hookMotionListener(View view) {
 		try {
-			CCMotionListener listener = new CCMotionListener(this);
+			DMotionListener listener = new DMotionListener(this);
 			view.setOnGenericMotionListener(listener);
 		} catch (Exception ex) {
 			// Unsupported on android 12
@@ -440,27 +440,27 @@ public class MainActivity extends Activity
 	}
 	
 	// SurfaceHolder.Callback - API level 1
-	class CCSurfaceCallback implements SurfaceHolder.Callback {
+	class DSurfaceCallback implements SurfaceHolder.Callback {
 		public void surfaceCreated(SurfaceHolder holder) {
 			// getSurface - API level 1
-			Log.i("CC_WIN", "win created " + holder.getSurface());
+			Log.i("D_WIN", "win created " + holder.getSurface());
 			MainActivity.this.pushCmd(CMD_WIN_CREATED, holder.getSurface());
 		}
 		
 		public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
 			// getSurface - API level 1
-			Log.i("CC_WIN", "win changed " + holder.getSurface());
+			Log.i("D_WIN", "win changed " + holder.getSurface());
 			MainActivity.this.pushCmd(CMD_WIN_RESIZED, holder.getSurface());
 		}
 		
 		public void surfaceDestroyed(SurfaceHolder holder) {
 			// getSurface, removeCallback - API level 1
-			Log.i("CC_WIN", "win destroyed " + holder.getSurface());
-			Log.i("CC_WIN", "cur view " + curView);
+			Log.i("D_WIN", "win destroyed " + holder.getSurface());
+			Log.i("D_WIN", "cur view " + curView);
 			holder.removeCallback(this);
 			
-			//08-02 21:03:02.967: E/BufferQueueProducer(1350): [SurfaceView - com.classicube.ClassiCube/com.classicube.MainActivity#0] disconnect: not connected (req=2)
-			//08-02 21:03:02.968: E/SurfaceFlinger(1350): Failed to find layer (SurfaceView - com.classicube.ClassiCube/com.classicube.MainActivity#0) in layer parent (no-parent).
+			//08-02 21:03:02.967: E/BufferQueueProducer(1350): [SurfaceView - com.deleter.Deleter/com.deleter.MainActivity#0] disconnect: not connected (req=2)
+			//08-02 21:03:02.968: E/SurfaceFlinger(1350): Failed to find layer (SurfaceView - com.deleter.Deleter/com.deleter.MainActivity#0) in layer parent (no-parent).
 	
 			MainActivity.this.pushCmd(CMD_WIN_DESTROYED);
 			// In case game thread is blocked showing a dialog on main thread
@@ -476,10 +476,10 @@ public class MainActivity extends Activity
 	}
 	
 	// SurfaceHolder.Callback2 - API level 9
-	class CCSurfaceCallback2 extends CCSurfaceCallback implements SurfaceHolder.Callback2 {
+	class DSurfaceCallback2 extends DSurfaceCallback implements SurfaceHolder.Callback2 {
 		public void surfaceRedrawNeeded(SurfaceHolder holder) {
 			// getSurface - API level 1
-			Log.i("CC_WIN", "win dirty " + holder.getSurface());
+			Log.i("D_WIN", "win dirty " + holder.getSurface());
 			MainActivity.this.pushCmd(CMD_WIN_REDRAW);
 		}
 	}
@@ -491,17 +491,17 @@ public class MainActivity extends Activity
 	void createSurfaceCallback() {
 		if (callback != null) return;
 		try {
-			callback = new CCSurfaceCallback2(); 
+			callback = new DSurfaceCallback2(); 
 		} catch (NoClassDefFoundError ex) {
 			ex.printStackTrace();
-			callback = new CCSurfaceCallback();
+			callback = new DSurfaceCallback();
 		}
 	}
 	 
 	void attachSurface() {
 		// setContentView, requestFocus, getHolder, addCallback, RGBX_8888 - API level 1
 		createSurfaceCallback();
-		CCView view = new CCView(this);
+		DView view = new DView(this);
 		view.getHolder().addCallback(callback);
 		view.getHolder().setFormat(PixelFormat.RGBX_8888);
 
@@ -753,7 +753,7 @@ public class MainActivity extends Activity
 		try {
 			Uri uri;
 			if (android.os.Build.VERSION.SDK_INT >= 23){ // android 6.0
-				uri = CCFileProvider.getUriForFile("screenshots/" + path);
+				uri = DFileProvider.getUriForFile("screenshots/" + path);
 			} else {
 				// when trying to use content:// URIs on my android 4.0.3 test device
 				//   - 1 app crashed
