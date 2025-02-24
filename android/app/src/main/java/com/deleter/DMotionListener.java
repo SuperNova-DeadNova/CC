@@ -1,12 +1,12 @@
-package com.classicube;
+package com.deleter;
 import android.view.InputDevice;
 import android.view.MotionEvent;
 import android.view.View;
 
-public class CCMotionListener implements View.OnGenericMotionListener {
+public class DMotionListener implements View.OnGenericMotionListener {
     MainActivity activity;
 
-    public CCMotionListener(MainActivity activity) {
+    public DMotionListener(MainActivity activity) {
         this.activity = activity;
     }
 
