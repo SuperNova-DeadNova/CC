@@ -18,7 +18,7 @@
         android:grantUriPermissions="true" >
     </provider>
 
-    <activity android:name="com.Deleter.MainActivity" android:label="Deleter"
+    <activity android:name="com.deleter.MainActivity" android:label="Deleter"
               android:configChanges="orientation|screenSize|keyboard|keyboardHidden">
 
       <intent-filter>
