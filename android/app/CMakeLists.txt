@@ -22,7 +22,7 @@ set(${CMAKE_C_FLAGS}, "${CMAKE_C_FLAGS}")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++11 -Wall -Werror")
 
 add_library(deleter SHARED
-        ../../src/main.c
+        ../../src/main.cpp
         ../../src/IsometricDrawer.c
         ../../src/Builder.c
         ../../src/ExtMath.c
