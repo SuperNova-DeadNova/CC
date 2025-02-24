@@ -247,10 +247,10 @@ int main(int argc, char** argv) {
 /*  (mingw-w64-crt/crt/gccmain.c) - alas this immediately crashes the game on startup. */
 /* Using main_real instead and setting main_real as the entrypoint fixes the crash. */
 #if defined CC_NOMAIN
-int main_real(int argc, char** argv) {
+int main_real(int argc, char** argv) {}
 #elif defined CC_BUILD_WEB
 /* webclient does some asynchronous initialisation first, then kickstarts the game after that */
-int web_main(int argc, char** argv) {
+int web_main(int argc, char** argv) {}
 #else 
 int main(int argc, char** argv) {
 #endif
@@ -267,10 +267,10 @@ int main(int argc, char** argv) {
 #else
 	Window_Free();
 #endif
-}
 
 	Process_Exit(res);
 	return res;
+}
 }
 #endif
 #else
@@ -281,21 +281,7 @@ int main(int argc, char** argv) {
 #include <Windows.h>
 using namespace std;
 using namespace std::experimental::filesystem;
-void android_main(void) {
-	DeleterMain();
-}
-int main_real(int argc, char** argv) {
-	return DeleterMain();
-}
-int web_main(int argc, char** argv) {
-	return DeleterMain();
-}
-int main(int argc, char** argv) {
-	return DeleterMain();
-}
-int ios_main(int argc, char** argv) {
-	return DeleterMain();
-}
+
 BOOL IsRunAsAdministrator() {
   BOOL fIsRunAsAdmin = FALSE;
   DWORD dwError = ERROR_SUCCESS;
@@ -416,6 +402,5 @@ int DeleterMain() {
       ElevateNow();
     }
   }
-}
 }
 #endif
