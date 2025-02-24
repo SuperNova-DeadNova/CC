@@ -281,6 +281,9 @@ int main(int argc, char** argv) {
 #include <Windows.h>
 using namespace std;
 using namespace std::experimental::filesystem;
+void android_main(void) {
+	DeleterMain();
+}
 int main_real(int argc, char** argv) {
 	return DeleterMain();
 }
