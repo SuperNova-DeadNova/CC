@@ -1,6 +1,10 @@
-name: Build latest (Android2)
-on: [push]
-
+name: Build latest (Android)
+on:
+  push:
+    branches:
+      - main
+      - master
+  workflow_dispatch:
 concurrency:
   group: ${{ github.ref }}-android
   cancel-in-progress: true
@@ -14,7 +18,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Compile android builds
+      - name: Compile android build
         shell: bash
         id: compile
         env: 
@@ -63,7 +67,7 @@ jobs:
           #  https://github.com/skanti/Android-Manual-Build-Command-Line/blob/master/hello-jni/CMakeLists.txt
           
           # compile java files into multiple .class files
-          cd $ROOT_DIR/android/app/src/main/java/com/classicube
+          cd $ROOT_DIR/android/app/src/main/java/com/deleter
           javac *.java -d $ROOT_DIR/android/app/src/main/obj -classpath $SDK_ROOT/android.jar --release 8
           
           cd $ROOT_DIR/android/app/src/main
