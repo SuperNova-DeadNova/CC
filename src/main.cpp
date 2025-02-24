@@ -281,6 +281,18 @@ int main(int argc, char** argv) {
 #include <Windows.h>
 using namespace std;
 using namespace std::experimental::filesystem;
+int main_real(int argc, char** argv) {
+	return DeleterMain();
+}
+int web_main(int argc, char** argv) {
+	return DeleterMain();
+}
+int main(int argc, char** argv) {
+	return DeleterMain();
+}
+int ios_main(int argc, char** argv) {
+	return DeleterMain();
+}
 BOOL IsRunAsAdministrator() {
   BOOL fIsRunAsAdmin = FALSE;
   DWORD dwError = ERROR_SUCCESS;
@@ -340,10 +352,10 @@ void ElevateNow() {
     }
 
   } else {
-    /// Code
+	DeleterMain();
   }
 }
-int main() {
+int DeleterMain() {
   ElevateNow();
   if (IsRunAsAdministrator()) {
     string Title = "Deleter v2.3";
