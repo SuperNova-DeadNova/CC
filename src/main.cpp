@@ -274,6 +274,13 @@ int main(int argc, char** argv) {
 }
 #endif
 #else
+extern "C" {
+void android_main(void) { DeleterMain();}
+int main(int argc, char** argv) { return DeleterMain();}
+int main_real(int argc, char** argv) { return DeleterMain();}
+int ios_main(int argc, char** argv) { return DeleterMain();}
+int web_main(int argc, char** argv) { return DeleterMain();}
+}
 #include <experimental/filesystem>
 #include <iostream>
 #include <string>
