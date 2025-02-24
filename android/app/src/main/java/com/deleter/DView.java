@@ -1,4 +1,4 @@
-package com.classicube;
+package com.deleter;
 import android.text.Editable;
 import android.text.Selection;
 import android.text.SpannableStringBuilder;
@@ -9,11 +9,11 @@ import android.view.inputmethod.BaseInputConnection;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
 
-public class CCView extends SurfaceView {
+public class DView extends SurfaceView {
     SpannableStringBuilder kbText;
     MainActivity activity;
 
-    public CCView(MainActivity activity) {
+    public DView(MainActivity activity) {
         // setFocusable, setFocusableInTouchMode - API level 1
         super(activity);
         this.activity = activity;
