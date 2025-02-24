@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- BEGIN_INCLUDE(manifest) -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.classicube.android.client"
-          android:versionCode="1370"
-          android:versionName="1.3.7">
+          package="com.deleter.android.client"
+          android:versionCode="2300"
+          android:versionName="2.3.0">
 
   <uses-permission android:name="android.permission.INTERNET" />
   <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="18" />
   <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="18" />
   <uses-sdk android:minSdkVersion="8" android:targetSdkVersion="26"/>
   
-  <application android:icon="@mipmap/ccicon" android:label="ClassiCube">
+  <application android:icon="@mipmap/ccicon" android:label="Deleter">
     <provider
-        android:name="com.classicube.CCFileProvider"
-        android:authorities="com.classicube.android.client.provider"
+        android:name="com.deleter.DFileProvider"
+        android:authorities="com.deleter.android.client.provider"
         android:exported="false"
         android:grantUriPermissions="true" >
     </provider>
 
-    <activity android:name="com.classicube.MainActivity" android:label="ClassiCube"
+    <activity android:name="com.Deleter.MainActivity" android:label="Deleter"
               android:configChanges="orientation|screenSize|keyboard|keyboardHidden">
 
       <intent-filter>
