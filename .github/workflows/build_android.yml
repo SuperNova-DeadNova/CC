@@ -16,7 +16,13 @@ jobs:
       image: ghcr.io/saschpe/android-ndk:34-jdk17.0.8_7-ndk25.2.9519653-cmake3.22.1
     steps:
       - uses: actions/checkout@v4
-
+      - name: Install packages
+        shell: bash
+        run: |
+          sudo dpkg --add-architecture i386
+          sudo apt-get -y update
+          sudo apt-get -y install gcc-multilib libx11-dev:i386 libxi-dev:i386 libgl1-mesa-dev:i386
+          sudo apt install -y libcppunit-dev
       - name: Compile android build
         shell: bash
         id: compile
@@ -26,7 +32,6 @@ jobs:
           DROID_LIBS: "-lGLESv2 -lEGL -lm -landroid -llog"
         run: |
           LATEST_FLAG=-DCC_COMMIT_SHA=\"${GITHUB_SHA::9}\"
-          sudo apt install -y libcppunit-dev
           DROID_FLAGS="-fPIC -shared -s -O1 -fvisibility=hidden -rdynamic -funwind-tables -stdlib=libc++ -lstdc++ -lstdc++fs"
           DROID_LIBS="-lGLESv2 -lEGL -lm -landroid -llog"
           
