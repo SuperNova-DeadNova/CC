@@ -29,7 +29,7 @@ jobs:
           DROID_LIBS="-lGLESv2 -lEGL -lm -landroid -llog"
           
           ROOT_DIR=$PWD
-          NDK_ROOT="/opt/android-sdk-linux/ndk/27.2.12479018/toolchains/llvm/prebuilt/linux-x86_64/bin"
+          NDK_ROOT="/opt/android-sdk-linux/ndk/25.2.9519653/toolchains/llvm/prebuilt/linux-x86_64/bin"
           TOOLS_ROOT=$ROOT_DIR/build-tools
           SDK_ROOT="/opt/android-sdk-linux/platforms/android-34"
           
