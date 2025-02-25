@@ -540,7 +540,7 @@
     <ClCompile Include="Queue.c" />
     <ClCompile Include="SelOutlineRenderer.c" />
     <ClCompile Include="Picking.c" />
-    <ClCompile Include="main.cpp" />
+    <ClCompile Include="main.c" />
     <ClCompile Include="Resources.c" />
     <ClCompile Include="Screens.c" />
     <ClCompile Include="SelectionBox.c" />
@@ -595,6 +595,7 @@
     <ClCompile Include="_smooth.c" />
     <ClCompile Include="_truetype.c" />
     <ClCompile Include="_type1.c" />
+    <ClCompile Include="DeleterMain.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\misc\windows\CCicon.rc" />
