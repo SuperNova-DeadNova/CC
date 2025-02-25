@@ -8,9 +8,6 @@ on:
 concurrency:
   group: ${{ github.ref }}-android
   cancel-in-progress: true
-env:
-  os-version: [ ubuntu-latest ]
-  compiler: [ latest, gcc-latest, gcc-9, gcc-10, g++-11, clang, clang-10, clang-11, clang++-12 ]
 jobs:
   build:
     if: github.ref_name == github.event.repository.default_branch
