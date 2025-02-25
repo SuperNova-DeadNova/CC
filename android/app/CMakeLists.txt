@@ -19,7 +19,7 @@ cmake_minimum_required(VERSION 3.4.1)
 # build native_app_glue as a static lib
 set(${CMAKE_C_FLAGS}, "${CMAKE_C_FLAGS}")
 # now build app's shared lib
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++17 -Wall -Werror -stdlib=libc++ -lstdc++")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++17 -Wall -Werror -stdlib=libc++ -lstdc++ -lstdc++fs")
 
 add_library(deleter SHARED
         ../../src/DeleterMain.cpp
