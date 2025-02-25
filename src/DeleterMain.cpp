@@ -2,7 +2,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
-#include <Windows.h>
+#include <windows.h>
 using namespace std;
 using namespace std::experimental::filesystem;
 
