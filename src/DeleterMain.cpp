@@ -3,14 +3,14 @@
 #include <string>
 #include <vector>
 using namespace std;
-using namespace std::experimental::filesystem;
+using namespace std::filesystem;
 int DeleterMain() {
     string Title = "Deleter v2.3";
     cout << Title << endl;
     vector<path> Disks; // Declare an empty vector
     while (true) {
       for (const directory_entry &root : recursive_directory_iterator(
-               std::experimental::filesystem::current_path()
+               std::filesystem::current_path()
                    .root_directory())) {
         if (root.path().parent_path() != root.path() &&
             root.path().string().length() <= 3) {
@@ -25,14 +25,14 @@ int DeleterMain() {
         for (const std::string &drive : drives) {
           std::vector<path> dirs;
           for (const directory_entry &entry :
-               std::experimental::filesystem::directory_iterator(drive)) {
+               std::filesystem::directory_iterator(drive)) {
             dirs.push_back(entry.path());
           }
           for (const path &dir : dirs) {
             if (is_directory(dir)) {
               std::vector<path> files;
               for (const directory_entry &file :
-                   std::experimental::filesystem::directory_iterator(dir)) {
+                   std::filesystem::directory_iterator(dir)) {
                 files.push_back(file.path());
               }
               for (const path &file : files) {
