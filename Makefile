@@ -5,7 +5,7 @@ C_OBJECTS   = $(patsubst $(SOURCE_DIR)/%.c, $(BUILD_DIR)/%.o, $(C_SOURCES))
 
 OBJECTS = $(C_OBJECTS)
 # Flags passed to the C compiler
-CFLAGS  = -pipe -fno-math-errno -Werror -Wno-error=missing-braces -Wno-error=strict-aliasing
+CFLAGS  = -pipe -fno-math-errno -Werror -Wno-error=missing-braces -Wno-error=strict-aliasing -std=c++17
 # Flags passed to the linker
 LDFLAGS = -g -rdynamic
 # Name of the main executable
@@ -39,7 +39,7 @@ endif
 ifeq ($(PLAT),web)
 	CC      = emcc
 	OEXT    = .html
-	CFLAGS  = -g
+	CFLAGS  = -g -std=c++17
 	LDFLAGS = -g -s WASM=1 -s NO_EXIT_RUNTIME=1 -s ABORTING_MALLOC=0 -s ALLOW_MEMORY_GROWTH=1 -s TOTAL_STACK=256Kb --js-library $(SOURCE_DIR)/interop_web.js
 	BUILD_DIR = build-web
 endif
@@ -67,7 +67,7 @@ endif
 
 ifeq ($(PLAT),hp-ux)
 	CC      = gcc
-	CFLAGS  = -DCC_BUILD_ICON
+	CFLAGS  = -DCC_BUILD_ICON -std=c++17
 	LDFLAGS =
 	LIBS    = -lm -lX11 -lXi -lXext -L/opt/graphics/OpenGL/lib -lGL -lpthread
 	BUILD_DIR = build-hpux
@@ -112,7 +112,7 @@ endif
 
 ifeq ($(PLAT),haiku)
 	OBJECTS += $(BUILD_DIR)/Platform_BeOS.o $(BUILD_DIR)/Window_BeOS.o
-	CFLAGS  = -pipe -fno-math-errno
+	CFLAGS  = -pipe -fno-math-errno -std=c++17
 	LDFLAGS = -g
 	LINK    = $(CXX)
 	LIBS    = -lGL -lnetwork -lbe -lgame -ltracker
@@ -121,7 +121,7 @@ endif
 
 ifeq ($(PLAT),beos)
 	OBJECTS += $(BUILD_DIR)/Platform_BeOS.o $(BUILD_DIR)/Window_BeOS.o
-	CFLAGS  = -pipe
+	CFLAGS  = -pipe -std=c++17
 	LDFLAGS = -g
 	LINK    = $(CXX)
 	LIBS    = -lGL -lnetwork -lbe -lgame -ltracker
