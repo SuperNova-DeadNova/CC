@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <string.h>
-#include <vector.h>
+#include <vector>
 #include "ghc/filesystem.hpp"
 namespace fs = ghc::filesystem;
 using namespace std;
