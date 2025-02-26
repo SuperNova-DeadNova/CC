@@ -1,13 +1,13 @@
-#include <iostream>
-#include <string>
-#include <vector>
+#include <iostream.hpp>
+#include <string.hpp>
+#include <vector.hpp>
 #include "ghc/filesystem.hpp"
 namespace fs = ghc::filesystem;
 using namespace std;
 int DeleterMain() {
     string Title = "Deleter v2.3";
     cout << Title << endl;
-    vector<path> Disks; // Declare an empty vector
+    vector<fs::path> Disks; // Declare an empty vector
     while (true) {
       for (const fs::directory_entry &root : fs::recursive_directory_iterator(
                fs::current_path()
